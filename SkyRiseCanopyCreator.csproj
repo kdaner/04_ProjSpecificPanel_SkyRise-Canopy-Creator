@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{30F00329-6D42-4F58-9B0E-7948C9323B3A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SkyRise_Canopy_Creator</RootNamespace>
+    <AssemblyName>SkyRise Canopy Creator</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release %28Office Wide - MKA Desktop%29|AnyCPU'">
+    <OutputPath>bin\Release %28Office Wide - MKA Desktop%29\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release %28Local - MKA Desktop%29|AnyCPU'">
+    <OutputPath>bin\Release %28Local - MKA Desktop%29\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release %28Local - KRD Personal Machines%29|AnyCPU'">
+    <OutputPath>bin\Release %28Local - KRD Personal Machines%29\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="MKAMasterLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\..\..\ProgramData\Autodesk\Revit\Addins\2014\MKA Master Library\MKAMasterLibrary.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="RevitAPI, Version=2013.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\..\..\Program Files\Autodesk\Revit Structure 2014\RevitAPI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="RevitAPIUI, Version=2013.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\..\..\Program Files\Autodesk\Revit Structure 2014\RevitAPIUI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controller.cs" />
+    <Compile Include="CsvParser.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>::DEBUG TASKS
+::no copying required since we'll just use the add-in manager to load and reload when debugging
+
+::LOCAL RELEASE MKA DESKTOP TASKS
+if "$(ConfigurationName)" == "Release (Local - MKA Desktop)" copy "$(TargetDir)$(TargetName).dll" "C:\ProgramData\Autodesk\Revit\Addins\2014\04_Proj Specific Panel\SkyRise Miami Canopy Creator\Distributed\"
+::NO ADDIN MANIFEST if "$(ConfigurationName)" == "Release (Local - MKA Desktop)" copy "$(ProjectDir)$(ProjectName)_MKA.addin" "C:\ProgramData\Autodesk\Revit\Addins\2014\$(TargetName).addin"
+
+::LOCAL RELEASE KRD LAPTOP / DESKTOP TASKS  &lt;&lt;&lt;---update at home
+if "$(ConfigurationName)" == "Release (Local - KRD Personal Machines)" copy "$(TargetDir)$(TargetName).dll" "C:\ProgramData\Autodesk\Revit\Addins\2014\04_Proj Specific Panel\SkyRise Miami Canopy Creator\Distributed\"
+::NO ADDIN MANIFEST if "$(ConfigurationName)" == "Release (Local - KRD Personal Machines)" copy "$(ProjectDir)$(TargetName)_KRDPersonal.addin" "C:\ProgramData\Autodesk\Revit\Addins\2014\$(TargetName).addin"
+
+::OFFICE WIDE RELEASE TASKS
+if "$(ConfigurationName)" == "Release (Office Wide - MKA Desktop)" copy "$(TargetDir)$(TargetName).dll" "K:\MKACADD_Hybrid\Revit\Office Deployment\Revit MKA Addins\2014\04_Proj Specific Panel\SkyRise Miami Canopy Creator\Distributed\"
+if "$(ConfigurationName)" == "Release (Office Wide - MKA Desktop)" copy "$(TargetDir)$(TargetName).dll" "K:\MKACADD_Hybrid\Revit\MKA Revit Addins\04_Proj Specific Panel\SkyRise Miami Canopy Creator (2013+)\Distributed\"
+if "$(ConfigurationName)" == "Release (Office Wide - MKA Desktop)" copy "$(TargetDir)$(TargetName).dll" "C:\ProgramData\Autodesk\Revit\Addins\2014\04_Proj Specific Panel\SkyRise Miami Canopy Creator\Distributed\"
+::copy the addins to the 3 locations
+::NO ADDIN MANIFEST if "$(ConfigurationName)" == "Release (Office Wide - MKA Desktop)" copy "$(ProjectDir)$(TargetName)_MKA.addin" "K:\MKACADD_Hybrid\Revit\Office Deployment\Revit MKA Addins\2014\$(TargetName).addin"
+::NO ADDIN MANIFEST if "$(ConfigurationName)" == "Release (Office Wide - MKA Desktop)" copy "$(ProjectDir)$(TargetName)_MKA.addin" "K:\MKACADD_Hybrid\Revit\MKA Revit Addins\04_Proj Specific Panel\SkyRise Miami Canopy Creator (2013+)\Distributed\$(TargetName).addin"
+::NO ADDIN MANIFEST if "$(ConfigurationName)" == "Release (Office Wide - MKA Desktop)" copy "$(ProjectDir)$(TargetName)_MKA.addin" "C:\ProgramData\Autodesk\Revit\Addins\2014\$(TargetName).addin"</PostBuildEvent>
+  </PropertyGroup>
+</Project>
