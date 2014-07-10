@@ -6,7 +6,8 @@ using Autodesk.Revit;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Structure;
 using Autodesk.Revit.UI;
-using MKA_MasterLibrary;//for call home
+using MKA_MasterLibrary;
+
 
 namespace SkyRise_Canopy_Creator
 {
@@ -127,23 +128,71 @@ namespace SkyRise_Canopy_Creator
                     double endXcoord = Convert.ToDouble(strings[5]);
                     double endYcoord = Convert.ToDouble(strings[6]);
                     double endZcoord = Convert.ToDouble(strings[7]);
+                    bool isTrussChord = convertStringtoBool(strings[8]);
+                    bool isTrussWeb = convertStringtoBool(strings[9]);
+                    bool isTopSurface = convertStringtoBool(strings[10]);
+                    bool isLowerSurface = convertStringtoBool(strings[11]);
 
                     FamilySymbol beamSectionSize = beamType_W14x22;
-                    if (section == "W14x22")
-            {
-                beamSectionSize = beamType_W14x22;
-            }
-                    if (section == "W14x53")
+                    if (section == "2L6x6x1/2")
+                    {
+                        beamSectionSize = beamType_W14x22;
+                    }
+                    if (section == "2l8x8x1/2")
                     {
                         beamSectionSize = beamType_W14x53;
                     }
-                    if (section == "W14x90")
+                    if (section == "cable8")
+                    {
+                        beamSectionSize = beamType_W14x90;
+                    }
+                    if (section == "hss10x10x.500")
+                    {
+                        beamSectionSize = beamType_W14x90;
+                    }
+                    if (section == "hss12x12x.500")
+                    {
+                        beamSectionSize = beamType_W14x90;
+                    }
+                    if (section == "HSS8X8X.500")
+                    {
+                        beamSectionSize = beamType_W14x90;
+                    }
+                    if (section == "W14X109")
+                    {
+                        beamSectionSize = beamType_W14x90;
+                    }
+                    if (section == "W14x120")
+                    {
+                        beamSectionSize = beamType_W14x90;
+                    }
+                    if (section == "W14x176")
+                    {
+                        beamSectionSize = beamType_W14x90;
+                    }
+                    if (section == "W14x22")
+                    {
+                        beamSectionSize = beamType_W14x90;
+                    }
+                    if (section == "W14x233")
+                    {
+                        beamSectionSize = beamType_W14x90;
+                    }
+                    if (section == "W14x283")
+                    {
+                        beamSectionSize = beamType_W14x90;
+                    }
+                    if (section == "W14x455")
+                    {
+                        beamSectionSize = beamType_W14x90;
+                    }
+                    if (section == "W14x99")
                     {
                         beamSectionSize = beamType_W14x90;
                     }
 
                     //Autodesk.Revit.DB.XYZ placementPt = new XYZ(xcoord, ycoord, zcoord);
-                    PlaceBeam(rvtApp.Application, rvtDoc.Document,beamSectionSize ,rowNum, section, startXcoord, startYcoord, startZcoord, endXcoord, endYcoord, endZcoord);
+                    PlaceBeam(rvtApp.Application, rvtDoc.Document,beamSectionSize ,rowNum, section, startXcoord, startYcoord, startZcoord, endXcoord, endYcoord, endZcoord, isTrussChord, isTrussWeb, isTopSurface, isLowerSurface, rowNum);
                     //TODO convert variables to shared parameters
                 }
 
@@ -156,8 +205,8 @@ namespace SkyRise_Canopy_Creator
                 //Call home to usage monitoring database
                 String ribbonToolName = "SkyRise Canopy Placer";
                 String ribbonToolVersion = "2014_v1.0";
-                MKAUtilities test = new MKA_MasterLibrary.MKAUtilities();
-                test.CallHome(ribbonToolName, ribbonToolVersion, rvtDoc.Document.PathName, null, null, null, null, csvoutput.Count.ToString(), 0, 0);
+               // MKA_MasterLibrary.MKAUtilities test = new MKA_MasterLibrary.MKAUtilities();
+               // test.CallHome(ribbonToolName, ribbonToolVersion, rvtDoc.Document.PathName, null, null, null, null, csvoutput.Count.ToString(), 0, 0);
 
                 //  return succeeded info. 
                 return Autodesk.Revit.UI.Result.Succeeded;
@@ -208,7 +257,7 @@ namespace SkyRise_Canopy_Creator
             return null;
         }
 
-        private void PlaceBeam(Autodesk.Revit.ApplicationServices.Application rvtApp, Document rvtDoc, FamilySymbol beamType, string rowNum, string section, double startx, double starty, double startz, double endx, double endy, double endz)
+        private void PlaceBeam(Autodesk.Revit.ApplicationServices.Application rvtApp, Document rvtDoc, FamilySymbol beamType, string rowNum, string section, double startx, double starty, double startz, double endx, double endy, double endz, bool chord, bool web, bool top, bool lower, string rowid)
         {
             Autodesk.Revit.DB.XYZ point = new Autodesk.Revit.DB.XYZ(startx, starty, startz);
 
@@ -233,19 +282,52 @@ namespace SkyRise_Canopy_Creator
             foreach (Parameter p2 in tiebackparams)
             {
                 //TODO add paramters to create schedule of tieback information
-                if (p2.Definition.Name.ToString() == "S_TiebackPlacer_X")
+                if (p2.Definition.Name.ToString() == "Canopy_isTrussChord")
                 {
-                    p2.Set(point.X);
+                    int result = 0;
+                    if (chord == true){ result = 1;}
+                    p2.Set(result);
                 }
-                if (p2.Definition.Name.ToString() == "S_TiebackPlacer_Y")
+                if (p2.Definition.Name.ToString() == "Canopy_isTrussWeb")
                 {
-                    p2.Set(point.Y);
+                    int result = 0;
+                    if (web == true) { result = 1; }
+                    p2.Set(result);
                 }
-                if (p2.Definition.Name.ToString() == "S_TiebackPlacer_Z")
+                if (p2.Definition.Name.ToString() == "Canopy_isUpperSurface")
                 {
-                    p2.Set(point.Z);
+                    int result = 0;
+                    if (top == true) { result = 1; }
+                    p2.Set(result);
+                }
+                if (p2.Definition.Name.ToString() == "Canopy_isLowerSurface")
+                {
+                    int result = 0;
+                    if (lower == true) { result = 1; }
+                    p2.Set(result); 
+                }
+                if (p2.Definition.Name.ToString() == "Comments")
+                {
+                   p2.Set(rowid);
                 }
             }
         }
-     }
+
+        //convert strings to booleans
+        private bool convertStringtoBool(string input)
+        {
+            if (input.ToUpper() != "TRUE" && input.ToUpper() != "FALSE")
+            {
+                throw new Exception("invalid boolean value");
+            }
+            if (input.ToUpper() == "TRUE")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
 }
