@@ -20,6 +20,9 @@ namespace SkyRise_Canopy_Creator
     [Autodesk.Revit.Attributes.Journaling(Autodesk.Revit.Attributes.JournalingMode.NoCommandData)]
     public class Command : IExternalCommand
     {
+                //mapping
+                static List<FamilyMappingItem> mappingTable = new List<FamilyMappingItem>();
+        
         #region Interface implementation
         /// <summary>
         /// Implement this method as an external command for Revit.
@@ -39,6 +42,12 @@ namespace SkyRise_Canopy_Creator
         /// the operation.</returns>
         public Autodesk.Revit.UI.Result Execute(ExternalCommandData commandData, ref String message, Autodesk.Revit.DB.ElementSet elements)
         {
+                //mapping
+                mappingTable.Add(new FamilyMappingItem("W", "W-Wide Flange", @"K:\MKACADD_Hybrid\Revit\Revit Structure 2013\MKA Imperial Library\Structural\Framing\Steel\W-Wide Flange.rfa"));
+                mappingTable.Add(new FamilyMappingItem("HSS", "HSS-Hollow Structural Section", @"K:\MKACADD_Hybrid\Revit\Revit Structure 2013\MKA Imperial Library\Structural\Framing\Steel\HSS-Hollow Structural Section.rfa"));
+                mappingTable.Add(new FamilyMappingItem("2L", "LL-Double Angle", @"K:\MKACADD_Hybrid\Revit\Revit Structure 2013\MKA Imperial Library\Structural\Framing\Steel\LL-Double Angle.rfa"));
+                mappingTable.Add(new FamilyMappingItem("CABLE", "Cable", @"J:\SkyHighMiami\Revit\Custom Revit Families\Cable.rfa"));
+            
             try
             {
                 Autodesk.Revit.UI.UIApplication rvtApp = commandData.Application;
@@ -49,112 +58,105 @@ namespace SkyRise_Canopy_Creator
                 tran.Start();
 
                 #region Determine if Beam Sizes are loaded
-                Autodesk.Revit.DB.FamilySymbol beamType_W14x109 = FindFamilySymbol(rvtDoc.Document, "W-Wide Flange", "W14X109");
-                if (beamType_W14x109 == null)
-                {
-                    MessageBox.Show("       The beam family is not loaded.        \n         Please load the WF family.         \n       Action Cancelled.       ", "MKA Tieback Placer 2013_v1.0");
-                    tran.Dispose();
-                    return Autodesk.Revit.UI.Result.Failed;
-                }
-                Autodesk.Revit.DB.FamilySymbol beamType_W14x120 = FindFamilySymbol(rvtDoc.Document, "W-Wide Flange", "W14X120");
-                if (beamType_W14x120 == null)
-                {
-                    MessageBox.Show("       The beam family is not loaded.        \n         Please load the WF family.         \n       Action Cancelled.       ", "MKA Tieback Placer 2013_v1.0");
-                    tran.Dispose();
-                    return Autodesk.Revit.UI.Result.Failed;
-                }
-                Autodesk.Revit.DB.FamilySymbol beamType_W14x176 = FindFamilySymbol(rvtDoc.Document, "W-Wide Flange", "W14X176");
-                if (beamType_W14x176 == null)
-                {
-                    MessageBox.Show("       The beam family is not loaded.        \n         Please load the 'Tieback (MKA)' foundation family.         \n       Action Cancelled.       ", "MKA Tieback Placer 2013_v1.0");
-                    tran.Dispose();
-                    return Autodesk.Revit.UI.Result.Failed;
-                }
-                Autodesk.Revit.DB.FamilySymbol beamType_W14x22 = FindFamilySymbol(rvtDoc.Document, "W-Wide Flange", "W14X22");
-                if (beamType_W14x22 == null)
-                {
-                    MessageBox.Show("       The beam family is not loaded.        \n         Please load the WF family.         \n       Action Cancelled.       ", "MKA Tieback Placer 2013_v1.0");
-                    tran.Dispose();
-                    return Autodesk.Revit.UI.Result.Failed;
-                }
-                Autodesk.Revit.DB.FamilySymbol beamType_W14x233 = FindFamilySymbol(rvtDoc.Document, "W-Wide Flange", "W14X233");
-                if (beamType_W14x233 == null)
-                {
-                    MessageBox.Show("       The beam family is not loaded.        \n         Please load the WF family.         \n       Action Cancelled.       ", "MKA Tieback Placer 2013_v1.0");
-                    tran.Dispose();
-                    return Autodesk.Revit.UI.Result.Failed;
-                }
-                Autodesk.Revit.DB.FamilySymbol beamType_W14x283 = FindFamilySymbol(rvtDoc.Document, "W-Wide Flange", "W14X283");
-                if (beamType_W14x283 == null)
-                {
-                    MessageBox.Show("       The beam family is not loaded.        \n         Please load the WF family.         \n       Action Cancelled.       ", "MKA Tieback Placer 2013_v1.0");
-                    tran.Dispose();
-                    return Autodesk.Revit.UI.Result.Failed;
-                }
-                Autodesk.Revit.DB.FamilySymbol beamType_W14x455 = FindFamilySymbol(rvtDoc.Document, "W-Wide Flange", "W14X455");
-                if (beamType_W14x455 == null)
-                {
-                    MessageBox.Show("       The beam family is not loaded.        \n         Please load the WF family.         \n       Action Cancelled.       ", "MKA Tieback Placer 2013_v1.0");
-                    tran.Dispose();
-                    return Autodesk.Revit.UI.Result.Failed;
-                }
-                Autodesk.Revit.DB.FamilySymbol beamType_W14x99 = FindFamilySymbol(rvtDoc.Document, "W-Wide Flange", "W14X99");
-                if (beamType_W14x99 == null)
-                {
-                    MessageBox.Show("       The beam family is not loaded.        \n         Please load the WF family.         \n       Action Cancelled.       ", "MKA Tieback Placer 2013_v1.0");
-                    tran.Dispose();
-                    return Autodesk.Revit.UI.Result.Failed;
-                }
-                Autodesk.Revit.DB.FamilySymbol beamType_CABLE8 = FindFamilySymbol(rvtDoc.Document, "Cable", "CABLE8");
-                if (beamType_CABLE8 == null)
-                {
-                    MessageBox.Show("       The beam family is not loaded.        \n         Please load the CABLE family.         \n       Action Cancelled.       ", "MKA Tieback Placer 2013_v1.0");
-                    tran.Dispose();
-                    return Autodesk.Revit.UI.Result.Failed;
-                }
-                Autodesk.Revit.DB.FamilySymbol beamType_HSS10X10X12 = FindFamilySymbol(rvtDoc.Document, "HSS-Hollow Structural Section", "HSS10X10X1/2");
-                if (beamType_HSS10X10X12 == null)
-                {
-                    MessageBox.Show("       The beam family is not loaded.        \n         Please load the HSS family.         \n       Action Cancelled.       ", "MKA Tieback Placer 2013_v1.0");
-                    tran.Dispose();
-                    return Autodesk.Revit.UI.Result.Failed;
-                }
-                Autodesk.Revit.DB.FamilySymbol beamType_HSS12X12X12 = FindFamilySymbol(rvtDoc.Document, "HSS-Hollow Structural Section", "HSS12X12X1/2");
-                if (beamType_HSS12X12X12 == null)
-                {
-                    MessageBox.Show("       The beam family is not loaded.        \n         Please load the HSS family.         \n       Action Cancelled.       ", "MKA Tieback Placer 2013_v1.0");
-                    tran.Dispose();
-                    return Autodesk.Revit.UI.Result.Failed;
-                }
-                Autodesk.Revit.DB.FamilySymbol beamType_HSS8X8X12 = FindFamilySymbol(rvtDoc.Document, "HSS-Hollow Structural Section", "HSS8X8X1/2");
-                if (beamType_HSS8X8X12 == null)
-                {
-                    MessageBox.Show("       The beam family is not loaded.        \n         Please load the HSS family.         \n       Action Cancelled.       ", "MKA Tieback Placer 2013_v1.0");
-                    tran.Dispose();
-                    return Autodesk.Revit.UI.Result.Failed;
-                }
-                Autodesk.Revit.DB.FamilySymbol beamType_2L6X6X12 = FindFamilySymbol(rvtDoc.Document, "LL-Double Angle", "2L6X6X1/2");
-                if (beamType_2L6X6X12 == null)
-                {
-                    MessageBox.Show("       The beam family is not loaded.        \n         Please load the 2L family.         \n       Action Cancelled.       ", "MKA Tieback Placer 2013_v1.0");
-                    tran.Dispose();
-                    return Autodesk.Revit.UI.Result.Failed;
-                }
-                Autodesk.Revit.DB.FamilySymbol beamType_2L8X8X12 = FindFamilySymbol(rvtDoc.Document, "LL-Double Angle", "2L8X8X1/2");
-                if (beamType_2L8X8X12 == null)
-                {
-                    MessageBox.Show("       The beam family is not loaded.        \n         Please load the 2L family.         \n       Action Cancelled.       ", "MKA Tieback Placer 2013_v1.0");
-                    tran.Dispose();
-                    return Autodesk.Revit.UI.Result.Failed;
-                }
+                //Autodesk.Revit.DB.FamilySymbol beamType_W14x109 = FindFamilySymbol(rvtDoc.Document, "W-Wide Flange", "W14X109");
+                //if (beamType_W14x109 == null)
+                //{
+                //    MessageBox.Show("       The beam family is not loaded.        \n         Please load the WF family.         \n       Action Cancelled.       ", "MKA Tieback Placer 2013_v1.0");
+                //    tran.Dispose();
+                //    return Autodesk.Revit.UI.Result.Failed;
+                //}
+                //Autodesk.Revit.DB.FamilySymbol beamType_W14x120 = FindFamilySymbol(rvtDoc.Document, "W-Wide Flange", "W14X120");
+                //if (beamType_W14x120 == null)
+                //{
+                //    MessageBox.Show("       The beam family is not loaded.        \n         Please load the WF family.         \n       Action Cancelled.       ", "MKA Tieback Placer 2013_v1.0");
+                //    tran.Dispose();
+                //    return Autodesk.Revit.UI.Result.Failed;
+                //}
+                //Autodesk.Revit.DB.FamilySymbol beamType_W14x176 = FindFamilySymbol(rvtDoc.Document, "W-Wide Flange", "W14X176");
+                //if (beamType_W14x176 == null)
+                //{
+                //    MessageBox.Show("       The beam family is not loaded.        \n         Please load the 'Tieback (MKA)' foundation family.         \n       Action Cancelled.       ", "MKA Tieback Placer 2013_v1.0");
+                //    tran.Dispose();
+                //    return Autodesk.Revit.UI.Result.Failed;
+                //}
+                //Autodesk.Revit.DB.FamilySymbol beamType_W14x22 = FindFamilySymbol(rvtDoc.Document, "W-Wide Flange", "W14X22");
+                //if (beamType_W14x22 == null)
+                //{
+                //    MessageBox.Show("       The beam family is not loaded.        \n         Please load the WF family.         \n       Action Cancelled.       ", "MKA Tieback Placer 2013_v1.0");
+                //    tran.Dispose();
+                //    return Autodesk.Revit.UI.Result.Failed;
+                //}
+                //Autodesk.Revit.DB.FamilySymbol beamType_W14x233 = FindFamilySymbol(rvtDoc.Document, "W-Wide Flange", "W14X233");
+                //if (beamType_W14x233 == null)
+                //{
+                //    MessageBox.Show("       The beam family is not loaded.        \n         Please load the WF family.         \n       Action Cancelled.       ", "MKA Tieback Placer 2013_v1.0");
+                //    tran.Dispose();
+                //    return Autodesk.Revit.UI.Result.Failed;
+                //}
+                //Autodesk.Revit.DB.FamilySymbol beamType_W14x283 = FindFamilySymbol(rvtDoc.Document, "W-Wide Flange", "W14X283");
+                //if (beamType_W14x283 == null)
+                //{
+                //    MessageBox.Show("       The beam family is not loaded.        \n         Please load the WF family.         \n       Action Cancelled.       ", "MKA Tieback Placer 2013_v1.0");
+                //    tran.Dispose();
+                //    return Autodesk.Revit.UI.Result.Failed;
+                //}
+                //Autodesk.Revit.DB.FamilySymbol beamType_W14x455 = FindFamilySymbol(rvtDoc.Document, "W-Wide Flange", "W14X455");
+                //if (beamType_W14x455 == null)
+                //{
+                //    MessageBox.Show("       The beam family is not loaded.        \n         Please load the WF family.         \n       Action Cancelled.       ", "MKA Tieback Placer 2013_v1.0");
+                //    tran.Dispose();
+                //    return Autodesk.Revit.UI.Result.Failed;
+                //}
+                //Autodesk.Revit.DB.FamilySymbol beamType_W14x99 = FindFamilySymbol(rvtDoc.Document, "W-Wide Flange", "W14X99");
+                //if (beamType_W14x99 == null)
+                //{
+                //    MessageBox.Show("       The beam family is not loaded.        \n         Please load the WF family.         \n       Action Cancelled.       ", "MKA Tieback Placer 2013_v1.0");
+                //    tran.Dispose();
+                //    return Autodesk.Revit.UI.Result.Failed;
+                //}
+                //Autodesk.Revit.DB.FamilySymbol beamType_CABLE8 = FindFamilySymbol(rvtDoc.Document, "Cable", "CABLE8");
+                //if (beamType_CABLE8 == null)
+                //{
+                //    MessageBox.Show("       The beam family is not loaded.        \n         Please load the CABLE family.         \n       Action Cancelled.       ", "MKA Tieback Placer 2013_v1.0");
+                //    tran.Dispose();
+                //    return Autodesk.Revit.UI.Result.Failed;
+                //}
+                //Autodesk.Revit.DB.FamilySymbol beamType_HSS10X10X12 = FindFamilySymbol(rvtDoc.Document, "HSS-Hollow Structural Section", "HSS10X10X1/2");
+                //if (beamType_HSS10X10X12 == null)
+                //{
+                //    MessageBox.Show("       The beam family is not loaded.        \n         Please load the HSS family.         \n       Action Cancelled.       ", "MKA Tieback Placer 2013_v1.0");
+                //    tran.Dispose();
+                //    return Autodesk.Revit.UI.Result.Failed;
+                //}
+                //Autodesk.Revit.DB.FamilySymbol beamType_HSS12X12X12 = FindFamilySymbol(rvtDoc.Document, "HSS-Hollow Structural Section", "HSS12X12X1/2");
+                //if (beamType_HSS12X12X12 == null)
+                //{
+                //    MessageBox.Show("       The beam family is not loaded.        \n         Please load the HSS family.         \n       Action Cancelled.       ", "MKA Tieback Placer 2013_v1.0");
+                //    tran.Dispose();
+                //    return Autodesk.Revit.UI.Result.Failed;
+                //}
+                //Autodesk.Revit.DB.FamilySymbol beamType_HSS8X8X12 = FindFamilySymbol(rvtDoc.Document, "HSS-Hollow Structural Section", "HSS8X8X1/2");
+                //if (beamType_HSS8X8X12 == null)
+                //{
+                //    MessageBox.Show("       The beam family is not loaded.        \n         Please load the HSS family.         \n       Action Cancelled.       ", "MKA Tieback Placer 2013_v1.0");
+                //    tran.Dispose();
+                //    return Autodesk.Revit.UI.Result.Failed;
+                //}
+                //Autodesk.Revit.DB.FamilySymbol beamType_2L6X6X12 = FindFamilySymbol(rvtDoc.Document, "LL-Double Angle", "2L6X6X1/2");
+                //if (beamType_2L6X6X12 == null)
+                //{
+                //    MessageBox.Show("       The beam family is not loaded.        \n         Please load the 2L family.         \n       Action Cancelled.       ", "MKA Tieback Placer 2013_v1.0");
+                //    tran.Dispose();
+                //    return Autodesk.Revit.UI.Result.Failed;
+                //}
+                //Autodesk.Revit.DB.FamilySymbol beamType_2L8X8X12 = FindFamilySymbol(rvtDoc.Document, "LL-Double Angle", "2L8X8X1/2");
+                //if (beamType_2L8X8X12 == null)
+                //{
+                //    MessageBox.Show("       The beam family is not loaded.        \n         Please load the 2L family.         \n       Action Cancelled.       ", "MKA Tieback Placer 2013_v1.0");
+                //    tran.Dispose();
+                //    return Autodesk.Revit.UI.Result.Failed;
+                //}
                 #endregion
-
-                //mapping
-                List<FamilyMappingItem> mappingTable = new List<FamilyMappingItem>();
-                mappingTable.Add(new FamilyMappingItem("W", "W-Wide Flange", @"K:\MKACADD_Hybrid\Revit\Revit Structure 2013\MKA Imperial Library\Structural\Framing\Steel\W-Wide Flange.rfa"));
-                mappingTable.Add(new FamilyMappingItem("HSS", "HSS-Hollow Structural Section", @"K:\MKACADD_Hybrid\Revit\Revit Structure 2013\MKA Imperial Library\Structural\Framing\Steel\HSS-Hollow Structural Section.rfa"));
-                mappingTable.Add(new FamilyMappingItem("2L", "LL-Double Angle", @"K:\MKACADD_Hybrid\Revit\Revit Structure 2013\MKA Imperial Library\Structural\Framing\Steel\LL-Double Angle.rfa"));
-                mappingTable.Add(new FamilyMappingItem("CABLE", "Cable", @"J:\SkyHighMiami\Revit\Custom Revit Families\Cable.rfa"));
 
                 //display open file dialog
                 String input = string.Empty;
@@ -209,6 +211,8 @@ namespace SkyRise_Canopy_Creator
 
                 loadMemberFamilies(distinctsizes, rvtDoc, mappingTable);
 
+                loadMemberSizes(distinctsizes, rvtDoc);
+
                 //loop through the list of strings, assign variable values and place the ties in the model
                 foreach (string[] strings in csvoutput)
                 {
@@ -226,64 +230,77 @@ namespace SkyRise_Canopy_Creator
                     bool isLowerSurface = convertStringtoBool(strings[11]);
 
                     #region MyRegion
-                    FamilySymbol beamSectionSize = beamType_W14x22;
-                    if (section == "2L6X6X1/2")
-                    {
-                        beamSectionSize = beamType_2L6X6X12;
-                    }
-                    if (section == "2L8X8X1/2")
-                    {
-                        beamSectionSize = beamType_2L8X8X12;
-                    }
-                    if (section == "CABLE8")
-                    {
-                        beamSectionSize = beamType_CABLE8;
-                    }
-                    if (section == "HSS10X10X.500")
-                    {
-                        beamSectionSize = beamType_HSS10X10X12;
-                    }
-                    if (section == "HSS12X12X.500")
-                    {
-                        beamSectionSize = beamType_HSS12X12X12;
-                    }
-                    if (section == "HSS8X8X.500")
-                    {
-                        beamSectionSize = beamType_HSS8X8X12;
-                    }
-                    if (section == "W14X109")
-                    {
-                        beamSectionSize = beamType_W14x109;
-                    }
-                    if (section == "W14X120")
-                    {
-                        beamSectionSize = beamType_W14x120;
-                    }
-                    if (section == "W14X176")
-                    {
-                        beamSectionSize = beamType_W14x176;
-                    }
-                    if (section == "W14X22")
-                    {
-                        beamSectionSize = beamType_W14x22;
-                    }
-                    if (section == "W14X233")
-                    {
-                        beamSectionSize = beamType_W14x233;
-                    }
-                    if (section == "W14X283")
-                    {
-                        beamSectionSize = beamType_W14x283;
-                    }
-                    if (section == "W14X455")
-                    {
-                        beamSectionSize = beamType_W14x455;
-                    }
-                    if (section == "W14X99")
-                    {
-                        beamSectionSize = beamType_W14x99;
-                    } 
+                    //FamilySymbol beamSectionSize = beamType_W14x22;
+                    //if (section == "2L6X6X1/2")
+                    //{
+                    //    beamSectionSize = beamType_2L6X6X12;
+                    //}
+                    //if (section == "2L8X8X1/2")
+                    //{
+                    //    beamSectionSize = beamType_2L8X8X12;
+                    //}
+                    //if (section == "CABLE8")
+                    //{
+                    //    beamSectionSize = beamType_CABLE8;
+                    //}
+                    //if (section == "HSS10X10X.500")
+                    //{
+                    //    beamSectionSize = beamType_HSS10X10X12;
+                    //}
+                    //if (section == "HSS12X12X.500")
+                    //{
+                    //    beamSectionSize = beamType_HSS12X12X12;
+                    //}
+                    //if (section == "HSS8X8X.500")
+                    //{
+                    //    beamSectionSize = beamType_HSS8X8X12;
+                    //}
+                    //if (section == "W14X109")
+                    //{
+                    //    beamSectionSize = beamType_W14x109;
+                    //}
+                    //if (section == "W14X120")
+                    //{
+                    //    beamSectionSize = beamType_W14x120;
+                    //}
+                    //if (section == "W14X176")
+                    //{
+                    //    beamSectionSize = beamType_W14x176;
+                    //}
+                    //if (section == "W14X22")
+                    //{
+                    //    beamSectionSize = beamType_W14x22;
+                    //}
+                    //if (section == "W14X233")
+                    //{
+                    //    beamSectionSize = beamType_W14x233;
+                    //}
+                    //if (section == "W14X283")
+                    //{
+                    //    beamSectionSize = beamType_W14x283;
+                    //}
+                    //if (section == "W14X455")
+                    //{
+                    //    beamSectionSize = beamType_W14x455;
+                    //}
+                    //if (section == "W14X99")
+                    //{
+                    //    beamSectionSize = beamType_W14x99;
+                    //} 
                     #endregion
+
+               //go thru the string and get the first non digit chars
+                string memberShape = null;
+                int z = section.TakeWhile(c => char.IsDigit(c)).Count();
+                memberShape = section.Substring(0,z+1);
+                           
+                //check to see if the desired size is in mapping table
+                FamilyMappingItem temp = mappingTable.Find(x => x.SectionShortName.Equals(memberShape));
+                if(temp == null){//didn't find the section in the mapping table
+                throw new Exception("can't find the section prefix " + memberShape + " in the mapping table");
+                }    
+                
+                   FamilySymbol beamSectionSize = FindFamilySymbol(rvtDoc.Document, temp.FamilyName, section);
 
                     //Autodesk.Revit.DB.XYZ placementPt = new XYZ(xcoord, ycoord, zcoord);
                     PlaceBeam(rvtApp.Application, rvtDoc.Document, beamSectionSize, rowNum, section, startXcoord, startYcoord, startZcoord, endXcoord, endYcoord, endZcoord, isTrussChord, isTrussWeb, isTopSurface, isLowerSurface, rowNum);
@@ -349,6 +366,39 @@ namespace SkyRise_Canopy_Creator
                 }
             }
             return null;
+        }
+
+                /// <summary>
+        /// find the tieback family that will be placed
+        /// </summary>
+        /// <param name="rvtDoc">Revit document</param>
+        /// <param name="familyName">Family name of tieback</param>
+        /// <param name="symbolName">Symbol of tieback</param>
+        /// <returns></returns>
+        private bool CanFindFamilySymbol(Document rvtDoc, string familyName, string symbolName)
+        {
+            FilteredElementCollector collector = new FilteredElementCollector(rvtDoc);
+            FilteredElementIterator itr = collector.OfClass(typeof(Family)).GetElementIterator();
+            itr.Reset();
+            while (itr.MoveNext())
+            {
+                Autodesk.Revit.DB.Element elem = (Autodesk.Revit.DB.Element)itr.Current;
+                if (elem.GetType() == typeof(Autodesk.Revit.DB.Family))
+                {
+                    if (elem.Name == familyName)
+                    {
+                        Autodesk.Revit.DB.Family family = (Autodesk.Revit.DB.Family)elem;
+                        foreach (Autodesk.Revit.DB.FamilySymbol symbol in family.Symbols)
+                        {
+                            if (symbol.Name == symbolName)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
         }
 
         /// <summary>
@@ -536,24 +586,43 @@ namespace SkyRise_Canopy_Creator
         }
 
         //go through the sizes list and load member sizes if necessary
-        private bool loadMemberSizes(List<string> membersToLoad)
+        private bool loadMemberSizes(List<string> membersToLoad, Autodesk.Revit.UI.UIDocument rvtDoc)
         {
             foreach (string size in membersToLoad)
             {
-                //if any of the keys in the mapping table are contained in this member size then
-                //get the family name
-                    //get the short names of the members in the mapping table
-              
+                //get the size string
+                //DONE
 
-
-                //if the symbol is alreayd loaded, do nothing
-
-
-                //if the symbol is not loaded, load the symbol
-            }
-
-            //if they didn't all load, return false
-            return false;
+                //go thru the string and get the first non digit chars
+                string memberShape = null;
+                int z = size.TakeWhile(c => char.IsDigit(c)).Count();
+                memberShape = size.Substring(0,z+1);
+                           
+                //check to see if the desired size is in mapping table
+                FamilyMappingItem temp = mappingTable.Find(x => x.SectionShortName.Equals(memberShape));
+                if(temp == null){//didn't find the section in the mapping table
+                throw new Exception("can't find the section prefix " + memberShape + " in the mapping table");
+                }    
+                
+                //try to load the symbol
+                if (CanFindFamilySymbol(rvtDoc.Document, temp.FamilyName, memberShape))
+                    {
+                        MessageBox.Show(temp.FamilyName.ToString() + " member size already loaded");
+                    }
+                    else // the  member size isn't loaded so load
+                    {
+                        bool loadSuccess = rvtDoc.Document.LoadFamilySymbol(temp.FamilyPath, memberShape);
+                        if (loadSuccess)
+                        {
+                            MessageBox.Show("Loaded the " + temp.FamilyName +" family ok.");
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                }
+            return true;
         }
 
         //  Helper function - find the given file name in the set of Revit library paths. 
