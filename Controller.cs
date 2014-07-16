@@ -6,7 +6,7 @@ using Autodesk.Revit;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Structure;
 using Autodesk.Revit.UI;
-using MKA_MasterLibrary;
+//using MKA_MasterLibrary;
 using System.Linq; // for distinct list sorting
 using System.IO; //for Path
 
@@ -213,6 +213,7 @@ namespace SkyRise_Canopy_Creator
 
                 loadMemberSizes(distinctsizes, rvtDoc);
 
+
                 //loop through the list of strings, assign variable values and place the ties in the model
                 foreach (string[] strings in csvoutput)
                 {
@@ -290,10 +291,11 @@ namespace SkyRise_Canopy_Creator
                     #endregion
 
                //go thru the string and get the first non digit chars
-                string memberShape = null;
-                int z = section.TakeWhile(c => char.IsDigit(c)).Count();
-                memberShape = section.Substring(0,z+1);
-                           
+                     string memberShape = null;
+                       // int z = section.TakeWhile(c => char.IsLetter(c)).Count();
+                    //memberShape = section.Substring(0,z);
+                     memberShape = findSectionPrefix(section);
+
                 //check to see if the desired size is in mapping table
                 FamilyMappingItem temp = mappingTable.Find(x => x.SectionShortName.Equals(memberShape));
                 if(temp == null){//didn't find the section in the mapping table
@@ -301,9 +303,7 @@ namespace SkyRise_Canopy_Creator
                 }    
                 
                    FamilySymbol beamSectionSize = FindFamilySymbol(rvtDoc.Document, temp.FamilyName, section);
-
-                    //Autodesk.Revit.DB.XYZ placementPt = new XYZ(xcoord, ycoord, zcoord);
-                    PlaceBeam(rvtApp.Application, rvtDoc.Document, beamSectionSize, rowNum, section, startXcoord, startYcoord, startZcoord, endXcoord, endYcoord, endZcoord, isTrussChord, isTrussWeb, isTopSurface, isLowerSurface, rowNum);
+                   PlaceBeam(rvtApp.Application, rvtDoc.Document, beamSectionSize, rowNum, section, startXcoord, startYcoord, startZcoord, endXcoord, endYcoord, endZcoord, isTrussChord, isTrussWeb, isTopSurface, isLowerSurface, rowNum);
                     //TODO convert variables to shared parameters
                 }
 
@@ -334,6 +334,23 @@ namespace SkyRise_Canopy_Creator
             }
         }
         #endregion
+
+        private string findSectionPrefix(string input)
+        {
+            //go thru the string and get the first non digit chars
+            string memberShape = null;
+            int z = input.TakeWhile(c => char.IsLetter(c)).Count();
+            memberShape = input.Substring(0, z);
+
+            //check to see if member is a 2L which will fail the character test above
+            if (input.Substring(0, 2) == "2L")
+            {
+                return "2L";
+            }
+            
+            return memberShape;
+        }
+
 
         /// <summary>
         /// find the tieback family that will be placed
@@ -368,7 +385,7 @@ namespace SkyRise_Canopy_Creator
             return null;
         }
 
-                /// <summary>
+        /// <summary>
         /// find the tieback family that will be placed
         /// </summary>
         /// <param name="rvtDoc">Revit document</param>
@@ -382,22 +399,27 @@ namespace SkyRise_Canopy_Creator
             itr.Reset();
             while (itr.MoveNext())
             {
+                
                 Autodesk.Revit.DB.Element elem = (Autodesk.Revit.DB.Element)itr.Current;
                 if (elem.GetType() == typeof(Autodesk.Revit.DB.Family))
                 {
                     if (elem.Name == familyName)
                     {
+                        //MessageBox.Show("if family name: " + familyName + " symbol name: " + symbolName);
                         Autodesk.Revit.DB.Family family = (Autodesk.Revit.DB.Family)elem;
                         foreach (Autodesk.Revit.DB.FamilySymbol symbol in family.Symbols)
                         {
+                           // MessageBox.Show("foreach family name: " + family.Name + " symbol name: " + symbol.Name);
                             if (symbol.Name == symbolName)
                             {
+                             
                                 return true;
                             }
                         }
                     }
                 }
             }
+          //  MessageBox.Show("can find returning false");
             return false;
         }
 
@@ -592,12 +614,16 @@ namespace SkyRise_Canopy_Creator
             {
                 //get the size string
                 //DONE
-
+                
                 //go thru the string and get the first non digit chars
                 string memberShape = null;
-                int z = size.TakeWhile(c => char.IsDigit(c)).Count();
-                memberShape = size.Substring(0,z+1);
-                           
+                    //int z = size.TakeWhile(c => char.IsLetter(c)).Count();
+                    //memberShape = size.Substring(0,z);
+
+                memberShape = findSectionPrefix(size);
+
+              // MessageBox.Show(" membershape: "+ memberShape);
+
                 //check to see if the desired size is in mapping table
                 FamilyMappingItem temp = mappingTable.Find(x => x.SectionShortName.Equals(memberShape));
                 if(temp == null){//didn't find the section in the mapping table
@@ -605,19 +631,32 @@ namespace SkyRise_Canopy_Creator
                 }    
                 
                 //try to load the symbol
-                if (CanFindFamilySymbol(rvtDoc.Document, temp.FamilyName, memberShape))
+                if (CanFindFamilySymbol(rvtDoc.Document, temp.FamilyName, size))
                     {
-                        MessageBox.Show(temp.FamilyName.ToString() + " member size already loaded");
+                       // MessageBox.Show(temp.FamilyName.ToString() + " member size already loaded");
                     }
                     else // the  member size isn't loaded so load
                     {
-                        bool loadSuccess = rvtDoc.Document.LoadFamilySymbol(temp.FamilyPath, memberShape);
-                        if (loadSuccess)
+                        //create the family load options object
+                 //SampleFamilyLoadOptions loadoptions = new SampleFamilyLoadOptions();
+
+                        FamilySymbol resultSymbol;
+                    
+                    
+                    //MessageBox.Show("family is not loaded temp.familypath: " + temp.FamilyPath + " size: " + size);
+                        bool loadSuccess = rvtDoc.Document.LoadFamilySymbol(temp.FamilyPath, size, new SampleFamilyLoadOptions(), out resultSymbol);
+                       
+                    
+                    // MessageBox.Show("full file path: "+ Path.GetFullPath(@"K:\MKACADD_Hybrid\Revit\Revit Structure 2013\MKA Imperial Library\Structural\Framing\Steel\W-Wide Flange.rfa").ToString());
+                       // bool loadSuccess = rvtDoc.Document.LoadFamilySymbol(Path.GetFullPath(@"K:\MKACADD_Hybrid\Revit\Revit Structure 2013\MKA Imperial Library\Structural\Framing\Steel\W-Wide Flange.rfa"), "W12X26");
+                  //  MessageBox.Show("loadsuccess: " + loadSuccess.ToString());
+                        if (loadSuccess == true)
                         {
-                            MessageBox.Show("Loaded the " + temp.FamilyName +" family ok.");
+                 //           MessageBox.Show("Loaded the " + temp.FamilyName +" : " + size + " symbol ok.");
                         }
                         else
                         {
+                    //        MessageBox.Show("load member sizes returning false");
                             return false;
                         }
                     }
@@ -684,4 +723,51 @@ namespace SkyRise_Canopy_Creator
             return null;
         }
     }
+
+
+}
+
+public class SampleFamilyLoadOptions : IFamilyLoadOptions
+{
+    #region IFamilyLoadOptions Members
+
+    public bool OnFamilyFound(bool familyInUse, out bool overwriteParameterValues)
+    {
+        if (!familyInUse)
+        {
+           // TaskDialog.Show("SampleFamilyLoadOptions", "The family has not been in use and will keep loading.");
+
+            overwriteParameterValues = true;
+            return true;
+        }
+        else
+        {
+           // TaskDialog.Show("SampleFamilyLoadOptions", "The family has been in use but will still be loaded with existing parameters overwritten.");
+
+            overwriteParameterValues = false;
+            return true;
+        }
+    }
+
+    public bool OnSharedFamilyFound(Family sharedFamily, bool familyInUse, out FamilySource source, out bool overwriteParameterValues)
+    {
+        if (!familyInUse)
+        {
+           // TaskDialog.Show("SampleFamilyLoadOptions", "The shared family has not been in use and will keep loading.");
+
+            source = FamilySource.Family;
+            overwriteParameterValues = true;
+            return true;
+        }
+        else
+        {
+           // TaskDialog.Show("SampleFamilyLoadOptions", "The shared family has been in use but will still be loaded from the FamilySource with existing parameters overwritten.");
+
+            source = FamilySource.Family;
+            overwriteParameterValues = false;
+            return true;
+        }
+    }
+
+    #endregion
 }

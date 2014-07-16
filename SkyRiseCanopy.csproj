@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SkyRise_Canopy_Creator</RootNamespace>
     <AssemblyName>SkyRise Canopy Creator</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -80,7 +80,6 @@
     <Compile Include="Controller.cs" />
     <Compile Include="CsvParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SDKSampleFamilyLoading.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -103,8 +102,8 @@ if "$(ConfigurationName)" == "Release (Local - KRD Personal Machines)" copy "$(T
 ::NO ADDIN MANIFEST if "$(ConfigurationName)" == "Release (Local - KRD Personal Machines)" copy "$(ProjectDir)$(TargetName)_KRDPersonal.addin" "C:\ProgramData\Autodesk\Revit\Addins\2014\$(TargetName).addin"
 
 ::OFFICE WIDE RELEASE TASKS
-if "$(ConfigurationName)" == "Release (Office Wide - MKA Desktop)" copy "$(TargetDir)$(TargetName).dll" "K:\MKACADD_Hybrid\Revit\Office Deployment\Revit MKA Addins\2014\04_Proj Specific Panel\SkyRise Miami Canopy Creator\Distributed\"
-if "$(ConfigurationName)" == "Release (Office Wide - MKA Desktop)" copy "$(TargetDir)$(TargetName).dll" "K:\MKACADD_Hybrid\Revit\MKA Revit Addins\04_Proj Specific Panel\SkyRise Miami Canopy Creator (2013+)\Distributed\"
+if "$(ConfigurationName)" == "Release (Office Wide - MKA Desktop)" copy "$(TargetDir)$(TargetName).dll" "K:\Revit\Office Deployment\Revit MKA Addins\2014\04_Proj Specific Panel\SkyRise Miami Canopy Creator\Distributed\"
+if "$(ConfigurationName)" == "Release (Office Wide - MKA Desktop)" copy "$(TargetDir)$(TargetName).dll" "K:\Revit\MKA Revit Addins\04_Proj Specific Panel\SkyRise Miami Canopy Creator (2013+)\Distributed\"
 if "$(ConfigurationName)" == "Release (Office Wide - MKA Desktop)" copy "$(TargetDir)$(TargetName).dll" "C:\ProgramData\Autodesk\Revit\Addins\2014\04_Proj Specific Panel\SkyRise Miami Canopy Creator\Distributed\"
 ::copy the addins to the 3 locations
 ::NO ADDIN MANIFEST if "$(ConfigurationName)" == "Release (Office Wide - MKA Desktop)" copy "$(ProjectDir)$(TargetName)_MKA.addin" "K:\MKACADD_Hybrid\Revit\Office Deployment\Revit MKA Addins\2014\$(TargetName).addin"
